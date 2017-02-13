@@ -1,0 +1,265 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-image/iron-image.html">
+
+<link rel="import" href="../paper-ripple/paper-ripple.html">
+<link rel="import" href="../paper-progress/paper-progress.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
+
+<dom-module id="salte-image-upload">
+  <template strip-whitespace>
+    <style>
+      :host {
+        display: block;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        border-radius: 5px;
+        border: 1px dashed gray;
+
+        min-height: 202px;
+        margin: 12px;
+        color: gray;
+        font-size: 14px;
+        font-weight: 400;
+
+        user-select: none;
+        -webkit-user-select: none;
+
+        @apply --layout-vertical;
+      }
+
+      :host([disabled]) {
+        cursor: not-allowed;
+      }
+
+      .upload {
+        opacity: 1;
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+        @apply --layout-vertical;
+        @apply --layout-flex;
+        @apply --layout-center;
+        @apply --layout-center-justified;
+      }
+
+      :host([loading]) .upload {
+        opacity: 0;
+      }
+
+      :host([uploaded]) .upload {
+        display: none;
+      }
+
+      iron-icon {
+        width: 4em;
+        height: 4em;
+      }
+
+      .progress {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+        --paper-progress-height: 10px;
+        --paper-progress-container: {
+          border-radius: 5px;
+          -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
+        };
+      }
+
+      :host([loading]) .progress {
+        opacity: 1;
+      }
+
+      iron-image {
+        background-color: rgb(238, 238, 238);
+        width: 100%;
+        -webkit-user-drag: none;
+
+        @apply --layout-flex;
+      }
+
+      .delete {
+        position: absolute;
+        z-index: 1;
+        top: 5px;
+        right: 5px;
+
+        color: white;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.3);
+      }
+    </style>
+    <paper-ripple noink="[[disabled]]"></paper-ripple>
+    <template is="dom-if" if="[[uploaded]]">
+      <iron-image
+        src="[[dataUri]]"
+        sizing="contain">
+      </iron-image>
+      <paper-icon-button class="delete" icon="close" on-tap="reset"></paper-icon-button>
+    </template>
+    <div class="upload">
+      <slot name="upload">
+        <iron-icon icon="cloud-upload"></iron-icon>
+        Choose an image or drag it here.
+      </slot>
+    </div>
+    <paper-progress class="progress" value="[[progress]]"></paper-progress>
+    <input type="file" id="fileInput" on-change="_onUpload" hidden accept="image/*" multiple="false">
+  </template>
+
+  <script>
+    Polymer({
+      is: 'salte-image-upload',
+
+      listeners: {
+        'tap': 'promptForUpload',
+        'dragover': '_onDragover',
+        'drop': '_onUpload'
+      },
+
+      properties: {
+        /**
+         * The file that was uploaded
+         */
+        file: {
+          type: Object,
+          notify: true
+        },
+
+        data: {
+          type: String,
+          readOnly: true
+        },
+
+        dataUri: {
+          type: String,
+          computed: '_computeDataUri(data)'
+        },
+
+        progress: Number,
+
+        uploaded: {
+          type: Boolean,
+          reflectToAttribute: true,
+          computed: '_computeUploaded(data)'
+        },
+
+        /**
+         * Is a file uploading?
+         */
+        loading: {
+          type: Boolean,
+          reflectToAttribute: true
+        },
+
+        /**
+         * Disables uploading files
+         */
+        disabled: {
+          type: Boolean,
+          reflectToAttribute: true
+        },
+
+        supported: {
+          type: Boolean,
+          value: function() {
+            return window.FileReader;
+          },
+          readOnly: true
+        }
+      },
+
+      promptForUpload: function() {
+        if (this.disabled) {
+          return;
+        }
+        this.$.fileInput.value = '';
+        this.$.fileInput.click();
+      },
+
+      reset: function(event) {
+        if (event) {
+          event.stopPropagation();
+        }
+        this.set('file', null);
+        this.set('loading', false);
+        this.set('progress', 0);
+
+        this._setData(null);
+      },
+
+      _onUpload: function(event) {
+        if (this.disabled) {
+          return;
+        }
+        var files = event.target.files || event.dataTransfer.files;
+
+        if (!files.length) {
+          return;
+        }
+
+        this.set('file', files[0]);
+        this.async(this._uploadFile.bind(this, this.file));
+      },
+
+      _uploadFile: function(file) {
+        if (this.loading) {
+          return;
+        }
+
+        this.set('loading', true);
+        var fileReader = new FileReader();
+        fileReader.readAsBinaryString(file);
+
+        fileReader.onload = function() {
+          this.set('loading', false);
+          this.set('progress', 0);
+          this._setData(event.target.result);
+        }.bind(this);
+
+        fileReader.onprogress = function(data) {
+          if (data.lengthComputable) {
+            this.set('progress', parseInt((data.loaded / data.total) * 100, 10));
+          }
+        }.bind(this);
+
+        fileReader.onerror = function(event) {
+          this.set('loading', false);
+          console.error(event);
+        }.bind(this);
+      },
+
+      _onDragover: function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        debugger;
+      },
+
+      /**
+       * Convert the image data to a data uri
+       */
+      _computeDataUri: function(data) {
+        if (!data) {
+          return null;
+        }
+
+        return 'data:image/jpeg;base64,' + btoa(data);
+      },
+
+      /**
+       * Determine if the file has been uploaded
+       */
+      _computeUploaded: function(data) {
+        return !!data;
+      }
+    });
+  </script>
+</dom-module>

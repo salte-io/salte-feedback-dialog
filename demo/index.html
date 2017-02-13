@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>salte-feedback-dialog demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+    <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+    <link rel="import" href="../salte-feedback-dialog.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    <div class="vertical-section-container centered">
+      <h3>Displays a feedback dialog</h3>
+      <demo-snippet>
+        <template is="dom-bind">
+          <salte-feedback-dialog opened="{{opened}}" modal></salte-feedback-dialog>
+          <!-- Demo Trigger -->
+          <paper-toggle-button checked="{{opened}}">Opened?</paper-toggle-button>
+        </template>
+      </demo-snippet>
+      <h3>Supports overriding certain slots</h3>
+      <demo-snippet>
+        <template is="dom-bind">
+          <salte-feedback-dialog opened="{{opened}}">
+            <span slot="header">Feedback</span>
+            <span slot="cancel">Bail</span>
+            <span slot="submit">Stuffs broke</span>
+          </salte-feedback-dialog>
+          <!-- Demo Trigger -->
+          <paper-toggle-button checked="{{opened}}">Opened?</paper-toggle-button>
+        </template>
+      </demo-snippet>
+      <h3>Supports being disabled</h3>
+      <demo-snippet>
+        <template is="dom-bind">
+          <salte-feedback-dialog opened="{{opened}}" disabled>
+            <span slot="header">Feedback</span>
+            <span slot="cancel">Bail</span>
+            <span slot="submit">Stuffs broke</span>
+          </salte-feedback-dialog>
+          <!-- Demo Trigger -->
+          <paper-toggle-button checked="{{opened}}">Opened?</paper-toggle-button>
+        </template>
+      </demo-snippet>
+    </div>
+  </body>
+</html>
