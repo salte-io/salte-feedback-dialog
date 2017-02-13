@@ -5,6 +5,8 @@
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
+<link rel="import" href="../app-storage/app-network-status-behavior.html">
+
 <link rel="import" href="salte-image-upload.html">
 
 <!--
@@ -110,7 +112,7 @@ A dialog suited to submitting feedback with a screenshot
         <div class="upload">
           <salte-image-upload
             id="upload"
-            disabled="[[disabled]]"
+            disabled="[[_imageDisabled]]"
             file="{{feedback.file}}">
           </salte-image-upload>
         </div>
@@ -130,6 +132,10 @@ A dialog suited to submitting feedback with a screenshot
     Polymer({
       is: 'salte-feedback-dialog',
 
+      behaviors: [
+        Polymer.AppNetworkStatusBehavior
+      ],
+
       properties: {
         /**
         * The user-provided feedback
@@ -147,7 +153,10 @@ A dialog suited to submitting feedback with a screenshot
         /**
          * Whether all actions are disabled
          */
-        disabled: Boolean,
+        disabled: {
+          type: Boolean,
+          value: false
+        },
 
         /**
          * Set to true to keep overlay always on top.
@@ -175,7 +184,12 @@ A dialog suited to submitting feedback with a screenshot
         /**
          * Convenience property for setting an 'exit' animation.
          */
-        exitAnimation: String
+        exitAnimation: String,
+
+        _imageDisabled: {
+          type: Boolean,
+          computed: '_computeImageDisabled(disabled, online)'
+        }
       },
 
       /**
@@ -221,6 +235,10 @@ A dialog suited to submitting feedback with a screenshot
         });
         this.set('loading', false);
         this.set('disabled', false);
+      },
+
+      _computeImageDisabled: function(disabled, online) {
+        return disabled || !online;
       }
 
       /**
