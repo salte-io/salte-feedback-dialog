@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>salte-feedback-dialog test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../salte-feedback-dialog.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <salte-feedback-dialog></salte-feedback-dialog>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('salte-feedback-dialog', function() {
+        test('instantiating the element works', function() {
+          var element = fixture('basic');
+          assert.equal(element.is, 'salte-feedback-dialog');
+        });
+      });
+    </script>
+  </body>
+</html>
