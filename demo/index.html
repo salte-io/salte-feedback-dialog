@@ -41,11 +41,7 @@
       <h3>Supports being disabled</h3>
       <demo-snippet>
         <template is="dom-bind">
-          <salte-feedback-dialog opened="{{opened}}" disabled>
-            <span slot="header">Feedback</span>
-            <span slot="cancel">Bail</span>
-            <span slot="submit">Stuffs broke</span>
-          </salte-feedback-dialog>
+          <salte-feedback-dialog opened="{{opened}}" disabled></salte-feedback-dialog>
           <!-- Demo Trigger -->
           <paper-toggle-button checked="{{opened}}">Opened?</paper-toggle-button>
         </template>
