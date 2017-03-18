@@ -1,3 +1,5 @@
+[![Gitter](https://badges.gitter.im/salte-io/salte-feedback-dialog.svg)](https://gitter.im/salte-io/salte-feedback-dialog?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 # \<salte-feedback-dialog\>
 
 A dialog suited to submitting feedback with a screenshot
