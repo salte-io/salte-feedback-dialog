@@ -2,12 +2,18 @@
 
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../iron-icon/iron-icon.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
 <link rel="import" href="../iron-image/iron-image.html">
 
 <link rel="import" href="../paper-ripple/paper-ripple.html">
 <link rel="import" href="../paper-progress/paper-progress.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 
+<!--
+`salte-image-upload` allows users to upload an image (with drag and drop support) and preview it.
+
+@demo demo/salte-image-upload.html
+-->
 <dom-module id="salte-image-upload">
   <template strip-whitespace>
     <style>
@@ -104,7 +110,7 @@
         src="[[dataUri]]"
         sizing="contain">
       </iron-image>
-      <paper-icon-button class="delete" icon="close" on-tap="reset"></paper-icon-button>
+      <paper-icon-button class="delete" icon="close" on-tap="_reset"></paper-icon-button>
     </template>
     <div class="upload">
       <slot name="upload">
@@ -128,29 +134,33 @@
 
       properties: {
         /**
-         * The file that was uploaded
+         * The file that was uploaded.
          */
         file: {
           type: Object,
           notify: true
         },
 
-        data: {
+        /**
+         * The data uri of the image that was uploaded.
+         */
+        dataUri: {
           type: String,
           readOnly: true
         },
 
-        dataUri: {
-          type: String,
-          computed: '_computeDataUri(data)'
-        },
-
+        /**
+         * The progress of the upload.
+         */
         progress: Number,
 
+        /**
+         * Has a file been uploaded?
+         */
         uploaded: {
           type: Boolean,
           reflectToAttribute: true,
-          computed: '_computeUploaded(data)'
+          computed: '_computeUploaded(dataUri)'
         },
 
         /**
@@ -167,17 +177,12 @@
         disabled: {
           type: Boolean,
           reflectToAttribute: true
-        },
-
-        supported: {
-          type: Boolean,
-          value: function() {
-            return window.FileReader;
-          },
-          readOnly: true
         }
       },
 
+      /**
+       * Prompts the user to upload a file
+       */
       promptForUpload: function() {
         if (this.disabled) {
           return;
@@ -186,15 +191,22 @@
         this.$.fileInput.click();
       },
 
-      reset: function(event) {
+      _reset: function(event) {
         if (event) {
           event.stopPropagation();
         }
+        this.reset();
+      },
+
+      /**
+       * Resets the component
+       */
+      reset: function() {
         this.set('file', null);
         this.set('loading', false);
         this.set('progress', 0);
 
-        this._setData(null);
+        this._setDataUri(null);
       },
 
       _onUpload: function(event) {
@@ -217,50 +229,65 @@
         }
 
         this.set('loading', true);
+        this.fire('salte-image-upload-started', file);
         var fileReader = new FileReader();
-        fileReader.readAsBinaryString(file);
+        fileReader.readAsDataURL(file);
 
-        fileReader.onload = function() {
+        fileReader.onload = function(event) {
           this.set('loading', false);
           this.set('progress', 0);
-          this._setData(event.target.result);
+          this._setDataUri(event.target.result);
+          this.fire('salte-image-upload-finished', this.dataUri);
         }.bind(this);
 
         fileReader.onprogress = function(data) {
           if (data.lengthComputable) {
             this.set('progress', parseInt((data.loaded / data.total) * 100, 10));
+            this.fire('salte-image-upload-progress', this.progress);
           }
         }.bind(this);
 
         fileReader.onerror = function(event) {
           this.set('loading', false);
-          console.error(event);
+          this.fire('salte-image-upload-error', event);
         }.bind(this);
       },
 
       _onDragover: function(event) {
         event.preventDefault();
         event.stopPropagation();
-        debugger;
-      },
-
-      /**
-       * Convert the image data to a data uri
-       */
-      _computeDataUri: function(data) {
-        if (!data) {
-          return null;
-        }
-
-        return 'data:image/jpeg;base64,' + btoa(data);
       },
 
       /**
        * Determine if the file has been uploaded
        */
-      _computeUploaded: function(data) {
-        return !!data;
+      _computeUploaded: function(dataUri) {
+        return !!dataUri;
       }
+
+      /**
+       * Fired off when the user tries to upload an image.
+       * @event salte-image-upload-started
+       * @param {Event} event The `event.detail` is the `file` property
+       */
+
+      /**
+       * Fired off when the image finishes uploading.
+       * @event salte-image-upload-finished
+       * @param {Event} event The `event.detail` is the `dataUri` property
+       */
+
+      /**
+       * Fired off when the upload progress changes.
+       * @event salte-image-upload-progress
+       * @param {Event} event The `event.detail` is the `progress` property
+       */
+
+      /**
+       * Fired off when the upload fails.
+       * @event salte-image-upload-error
+       * @param {Event} event The `event.detail` is the error's `event`
+       */
     });
   </script>
 </dom-module>

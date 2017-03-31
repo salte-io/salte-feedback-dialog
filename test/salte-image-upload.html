@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>salte-image-upload test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+
+    <link rel="import" href="utilities.html">
+    <link rel="import" href="../salte-image-upload.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <salte-image-upload></salte-image-upload>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('event formats', function() {
+        test('should support the dialog format', function(done) {
+          var element = fixture('basic');
+
+          var file = createFile(125, 'image/jpeg');
+          element._onUpload({
+            target: {
+              files: [file]
+            }
+          });
+
+          element.addEventListener('salte-image-upload-finished', function(event) {
+            expect(event.detail).to.be.defined;
+            expect(element.dataUri).to.match(/^data:image\/jpeg;base64,[^;]+$/);
+            done();
+          });
+        });
+
+        test('should support the drag and drop format', function(done) {
+          var element = fixture('basic');
+
+          var file = createFile(125, 'image/jpeg');
+          element._onUpload({
+            target: {},
+            dataTransfer: {
+              files: [file]
+            }
+          });
+
+          element.addEventListener('salte-image-upload-finished', function(event) {
+            expect(event.detail).to.be.defined;
+            expect(element.dataUri).to.match(/^data:image\/jpeg;base64,[^;]+$/);
+            done();
+          });
+        });
+      });
+
+      suite('file formats', function() {
+        test('should support uploading jpegs', function(done) {
+          var element = fixture('basic');
+
+          var file = createFile(125, 'image/jpeg');
+          element._onUpload({
+            target: {
+              files: [file]
+            }
+          });
+
+          element.addEventListener('salte-image-upload-finished', function(event) {
+            expect(event.detail).to.be.defined;
+            expect(element.dataUri).to.match(/^data:image\/jpeg;base64,[^;]+$/);
+            expect(element.uploaded).to.equal(true);
+            done();
+          });
+        });
+
+        test('should support uploading pngs', function(done) {
+          var element = fixture('basic');
+
+          var file = createFile(125, 'image/png');
+          element._onUpload({
+            target: {
+              files: [file]
+            }
+          });
+
+          element.addEventListener('salte-image-upload-finished', function(event) {
+            expect(event.detail).to.be.defined;
+            expect(element.dataUri).to.match(/^data:image\/png;base64,[^;]+$/);
+            expect(element.uploaded).to.equal(true);
+            done();
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
