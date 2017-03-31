@@ -1,40 +1,28 @@
 [![Gitter](https://badges.gitter.im/salte-io/salte-feedback-dialog.svg)](https://gitter.im/salte-io/salte-feedback-dialog?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://beta.webcomponents.org/element/salte-io/salte-feedback-dialog)
+[![Build status](https://travis-ci.org/salte-io/salte-feedback-dialog.svg?branch=master)](https://travis-ci.org/salte-io/salte-feedback-dialog)
 
 # \<salte-feedback-dialog\>
 
-A dialog suited to submitting feedback with a screenshot
+A dialog for submitting feedback accompanied by a screenshot.
 
-## Install the Polymer-CLI
-
-First, make sure you have the [Polymer CLI](https://www.npmjs.com/package/polymer-cli) installed. Then run `polymer serve` to serve your application locally.
-
-## Viewing Your Application
-
+<!---
 ```
-$ polymer serve
+<custom-element-demo height="600">
+  <template>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="salte-feedback-dialog.html">
+    <style>
+      body {
+        font-family: 'Roboto', 'Noto', sans-serif;
+      }
+    </style>
+    <next-code-block></next-code-block>
+  </template>
+</custom-element-demo>
 ```
-
-## Building Your Application
-
+-->
+```html
+<salte-feedback-dialog opened>
+</salte-feedback-dialog>
 ```
-$ polymer build
-```
-
-This will create a `build/` folder with `bundled/` and `unbundled/` sub-folders
-containing a bundled (Vulcanized) and unbundled builds, both run through HTML,
-CSS, and JS optimizers.
-
-You can serve the built versions by giving `polymer serve` a folder to serve
-from:
-
-```
-$ polymer serve build/bundled
-```
-
-## Running Tests
-
-```
-$ polymer test
-```
-
-Your application is already set up to be tested via [web-component-tester](https://github.com/Polymer/web-component-tester). Run `polymer test` to run your application's test suite locally.

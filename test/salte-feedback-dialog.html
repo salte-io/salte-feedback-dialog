@@ -18,11 +18,25 @@
       </template>
     </test-fixture>
 
+    <test-fixture id="custom">
+      <template>
+        <salte-feedback-dialog>
+          <span slot="header">Feedback</span>
+          <span slot="cancel">Bail</span>
+          <span slot="submit">Stuffs broke</span>
+        </salte-feedback-dialog>
+      </template>
+    </test-fixture>
+
     <script>
       suite('salte-feedback-dialog', function() {
-        test('instantiating the element works', function() {
+        test('fires off an event when submit is clicked', function(done) {
           var element = fixture('basic');
-          assert.equal(element.is, 'salte-feedback-dialog');
+          element.addEventListener('salte-feedback-dialog-submitted', function(event) {
+            expect(event.detail.feedback).to.equal(element.feedback);
+            done();
+          });
+          element.$$('.buttons > paper-button:nth-child(2)').click();
         });
       });
     </script>

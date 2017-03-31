@@ -2,7 +2,7 @@
 
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 
-<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../salte-dialog/salte-dialog.html">
 <link rel="import" href="../paper-button/paper-button.html">
 
 <link rel="import" href="../app-storage/app-network-status-behavior.html">
@@ -10,40 +10,17 @@
 <link rel="import" href="salte-image-upload.html">
 
 <!--
-`salte-feedback-dialog`
-A dialog suited to submitting feedback with a screenshot
+`salte-feedback-dialog` is a dialog for submitting feedback accompanied by a screenshot.
 
-@demo demo/index.html
+@demo demo/salte-feedback-dialog.html
 -->
-
 <dom-module id="salte-feedback-dialog">
   <template strip-whitespace>
     <style>
-      #dialog {
-        width: 360px;
-        min-height: 531px;
-        border-radius: 5px;
-        overflow: hidden;
-
-        user-select: none;
-        -webkit-user-select: none;
-
-        @apply --layout-vertical;
-      }
-
-      #dialog > h2 {
-        margin: 0 !important;
-        padding: 14px 24px;
-
-        background: #673ab7;
-        color: white;
-
-        @apply --salte-feedback-dialog-header;
-      }
-
-      .content {
-        margin: 0 !important;
-        padding: 0 !important;
+      :host {
+        --salte-dialog-content: {
+          padding: 0;
+        };
       }
 
       .description {
@@ -65,33 +42,12 @@ A dialog suited to submitting feedback with a screenshot
         };
       }
 
-      .upload, .buttons {
-        background-color: rgb(250, 250, 250);
-        border-top: 1px solid rgb(224, 224, 224);
-      }
-      
-      @media all and (max-width: 961px) and (orientation: landscape), all and (max-width: 600px) and (orientation: portrait) {
-        #dialog {
-          position: fixed;
-          margin: 0 !important;
-          top: 0 !important;
-          left: 0 !important;
-          right: 0 !important;
-          bottom: 0 !important;
-          width: 100%;
-
-          border-radius: 0;
-
-          @apply --layout-vertical;
-        }
-
-        .content {
-          @apply --layout-flex;
-          @apply --layout-vertical;
-        }
+      .upload {
+        background-color: #fafafa;
+        border-top: 1px solid #e0e0e0;
       }
     </style>
-    <paper-dialog id="dialog"
+    <salte-dialog
       opened="{{opened}}"
       always-on-top="[[alwaysOnTop]]"
       modal="[[modal]]"
@@ -125,9 +81,8 @@ A dialog suited to submitting feedback with a screenshot
           <slot name="submit">Submit</slot>
         </paper-button>
       </div>
-    </paper-dialog>
+    </salte-dialog>
   </template>
-
   <script>
     Polymer({
       is: 'salte-feedback-dialog',
@@ -143,19 +98,18 @@ A dialog suited to submitting feedback with a screenshot
         feedback: {
           type: Object,
           value: function() {
-            return {
-            description: ''
-            };
+            return {};
           },
           notify: true
         },
 
         /**
-         * Whether all actions are disabled
+         * True if the overlay is currently displayed
          */
-        disabled: {
+        opened: {
           type: Boolean,
-          value: false
+          value: false,
+          notify: true
         },
 
         /**
@@ -164,25 +118,20 @@ A dialog suited to submitting feedback with a screenshot
         alwaysOnTop: Boolean,
 
         /**
-         * True if the overlay is currently displayed.
+         * If modal is true, this implies `no-cancel-on-outside-click`, `no-cancel-on-esc-key` and `with-backdrop`.
          */
-        opened: {
+        modal: {
           type: Boolean,
-          notify: true
+          value: false
         },
 
         /**
-         * If `modal` is true, this implies `no-cancel-on-outside-click`, `no-cancel-on-esc-key` and `with-backdrop`.
-         */
-        modal: Boolean,
-
-        /**
-         * Convenience property for setting an 'entry' animation.
+         * Convenience property for setting an 'entry' animation. The animated node is set to this if using `this` property.
          */
         entryAnimation: String,
 
         /**
-         * Convenience property for setting an 'exit' animation.
+         * Convenience property for setting an 'exit' animation. The animated node is set to this if using `this` property.
          */
         exitAnimation: String,
 
@@ -217,11 +166,9 @@ A dialog suited to submitting feedback with a screenshot
        * Submit the feedback
        */
       submit: function() {
-        this.dispatchEvent(new CustomEvent('salte-feedback-dialog-submitted', {
-          detail: {
-            feedback: this.feedback
-          }
-        }));
+        this.fire('salte-feedback-dialog-submitted', {
+          feedback: this.feedback
+        });
       },
 
       _dialogAnimationFinished: function() {
@@ -230,9 +177,7 @@ A dialog suited to submitting feedback with a screenshot
         }
 
         this.$.upload.reset();
-        this.set('feedback', {
-          description: ''
-        });
+        this.set('feedback', {});
         this.set('loading', false);
         this.set('disabled', false);
       },

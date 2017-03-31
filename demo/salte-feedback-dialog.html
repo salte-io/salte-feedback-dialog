@@ -11,6 +11,8 @@
     <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
     <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
     <link rel="import" href="../../paper-toggle-button/paper-toggle-button.html">
+    <link rel="import" href="../../neon-animation/animations/scale-up-animation.html">
+    <link rel="import" href="../../neon-animation/animations/fade-out-animation.html">
     <link rel="import" href="../salte-feedback-dialog.html">
 
     <style is="custom-style" include="demo-pages-shared-styles">
@@ -42,6 +44,14 @@
       <demo-snippet>
         <template is="dom-bind">
           <salte-feedback-dialog opened="{{opened}}" disabled></salte-feedback-dialog>
+          <!-- Demo Trigger -->
+          <paper-toggle-button checked="{{opened}}">Opened?</paper-toggle-button>
+        </template>
+      </demo-snippet>
+      <h3>Supports custom animations</h3>
+      <demo-snippet>
+        <template is="dom-bind">
+          <salte-feedback-dialog opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation"></salte-feedback-dialog>
           <!-- Demo Trigger -->
           <paper-toggle-button checked="{{opened}}">Opened?</paper-toggle-button>
         </template>
