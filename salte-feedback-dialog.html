@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 
+<link rel="import" href="../iron-input/iron-input.html">
 <link rel="import" href="../iron-autogrow-textarea/iron-autogrow-textarea.html">
 
 <link rel="import" href="../salte-dialog/salte-dialog.html">
@@ -25,7 +26,6 @@
 
       .description {
         width: 100%;
-        min-height: 192px;
         padding: 0;
         font-size: 16px;
         border: none;
@@ -40,6 +40,15 @@
           width: calc(100% - 40px);
           padding: 20px;
         };
+      }
+
+      .email {
+        font-size: 16px;
+        border: none;
+        padding: 10px 20px;
+        outline: none;
+        background-color: #fafafa;
+        border-top: 1px solid #e0e0e0;
       }
 
       .upload {
@@ -65,6 +74,15 @@
           placeholder="Describe your issue or share your ideas"
           required>
         </iron-autogrow-textarea>
+        <template is="dom-if" if="[[allowEmail]]">
+          <input is="iron-input"
+            class="email"
+            type="email"
+            bind-value="{{feedback.email}}"
+            disabled="[[disabled]]"
+            placeholder="Enter your email address"
+            required>
+        </template>
         <div class="upload">
           <salte-image-upload
             id="upload"
@@ -134,6 +152,11 @@
          * Convenience property for setting an 'exit' animation. The animated node is set to this if using `this` property.
          */
         exitAnimation: String,
+
+        /**
+         * Adds a place for the user to enter an email address
+         */
+        allowEmail: Boolean,
 
         _imageDisabled: {
           type: Boolean,
