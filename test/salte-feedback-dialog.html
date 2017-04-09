@@ -38,6 +38,14 @@
           });
           element.$$('.buttons > paper-button:nth-child(2)').click();
         });
+
+        test('email should appear conditionally', function() {
+          var element = fixture('basic');
+          expect(element.$$('.email')).to.be.null;
+          element.set('allowEmail', true);
+          Polymer.dom.flush();
+          expect(element.$$('.email')).to.not.be.null;
+        });
       });
     </script>
   </body>
