@@ -52,6 +52,10 @@
         @apply --layout-center-justified;
       }
 
+      /*
+       * NOTE: Safari doesn't refresh properly nested classes
+       * when reading a host attribute
+       */
       :host([loading]) .upload {
         opacity: 0;
       }
@@ -77,7 +81,6 @@
         --paper-progress-height: 10px;
         --paper-progress-container: {
           border-radius: 5px;
-          -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
         };
       }
 

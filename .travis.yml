@@ -3,10 +3,16 @@ node_js: stable
 dist: trusty
 sudo: required
 addons:
+  firefox: latest
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
   sauce_connect: true
 before_script:
-  - npm install -g bower polylint web-component-tester
-  - bower install
-  - polylint
+  - npm install -g polymer-cli
+  - polymer install --variants
 script:
-  - wct -s 'default'
+  - xvfb-run polymer test
+  - 'if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s ''default''; fi'
