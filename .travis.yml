@@ -1,7 +1,13 @@
 language: node_js
 node_js: stable
 dist: trusty
-sudo: required
+sudo: false
+cache:
+  directories:
+    - bower_components
+branches:
+  only:
+    - master
 before_script:
   - npm install -g polymer-cli
   - polymer install --variants
