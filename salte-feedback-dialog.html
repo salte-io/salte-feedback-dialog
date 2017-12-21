@@ -24,6 +24,10 @@
         };
       }
 
+      salte-dialog {
+        min-height: 531px;
+      }
+
       .description {
         width: 100%;
         padding: 0;
@@ -40,6 +44,12 @@
           width: calc(100% - 40px);
           padding: 20px;
         };
+      }
+
+      .content {
+        padding: 0;
+
+        @apply --layout-flex;
       }
 
       .email {
@@ -157,7 +167,7 @@
          * Adds a place for the user to enter an email address
          */
         allowEmail: Boolean,
-        
+
         /**
          * Disables all buttons and inputs
          */

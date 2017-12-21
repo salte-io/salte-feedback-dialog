@@ -30,7 +30,7 @@
     "iron-icons": "PolymerElements/iron-icons#1 - 2",
     "iron-image": "PolymerElements/iron-image#1 - 2",
     "app-storage": "PolymerElements/app-storage#1 - 2",
-    "salte-dialog": "salte-io/salte-dialog#1 - 2",
+    "salte-dialog": "salte-io/salte-dialog#1 - 3",
     "iron-input": "PolymerElements/iron-input#1 - 2"
   },
   "devDependencies": {
